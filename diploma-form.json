@@ -1,0 +1,40 @@
+{
+  "connection_id": "1eee33db-8866-4bff-b9ad-939dd6c5fe06",
+  "credential_proposal": {
+    "attributes": [
+      {
+        "value": "Ahmed Elghareeb",
+        "name": "signee",
+        "mime-type": "text/plain"
+      },
+      {
+        "name": "subject",
+        "value": "Japanese Language",
+        "mime-type": "text/plain"
+      },
+      {
+        "name": "degree",
+        "value": "B+",
+        "mime-type": "text/plain"
+      },
+      {
+        "name": "document_number",
+        "value": "A5342Sx",
+        "mime-type": "text/plain"
+      },
+      {
+        "name": "body",
+        "value": "Congrats",
+        "mime-type": "text/plain"
+      },
+      {
+        "value": "2018-05-12",
+        "name": "date_of_issue",
+        "mime-type": "text/plain"
+      }
+    ],
+    "@type": "issue-credential/1.0/credential-preview"
+  },
+  "auto_remove": "true",
+  "schema_id": "JEfsRZ6qBhToWbGcJDfe2N:2:EPFL_diploma_supplement:1.0.7"
+}
