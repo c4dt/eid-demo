@@ -1,9 +1,9 @@
 <template>
-  <div class="flex-auto bg-center text-center">
-    Please fill this form to create a credential
-  </div>
-  <br><br><br>
-  <form v-if="buildingForm" @submit.prevent="CreateVCData">
+  <form @submit.prevent="CreateVCData">
+    <div class="flex-auto bg-center text-center">
+      Please fill this form to create a credential
+    </div>
+    <br><br><br>
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-12">
         <h2 class="text-base font-semibold leading-7 text-gray-900">Credential Information</h2>
@@ -60,24 +60,12 @@
       <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
     </div>
   </form>
-  <div v-if="!buildingForm">
-    <p>Name: {{ signee }}</p>
-    <p>Document Number: {{ documentNumber }}</p>
-    <p>Subject: {{ subject }}</p>
-    <p>Degree: {{ degree }}</p>
-    <p>Date of issue: {{ dateOfIssue }}</p>
-    <p>Message: {{ body }}</p>
-
-    <div  class="flex items-center justify-center gap-x-6">
-      <p>Generate Verifiable Credential?</p>
-      <button type="button" @click="CreateConnection" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Generate</button>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from "axios";
+import type {DiplomaSchema} from "~/composables/VerifiableCredential";
+const emit = defineEmits(['DiplomaObjectCreated']);
 
 const signee = ref('Ahmed E.');
 const documentNumber = ref('A001');
@@ -86,77 +74,16 @@ const degree = ref('A+');
 const dateOfIssue = ref('1993-09-01');
 const body = ref('Congrats!');
 
-const buildingForm = ref(true);
-
 const CreateVCData = async () => {
-  buildingForm.value = false;
-  console.log('Form data is valid, sending to server...');
+  const createdDiploma: DiplomaSchema = {
+    signee: signee.value,
+    documentNumber: documentNumber.value,
+    subject: subject.value,
+    degree: degree.value,
+    dateOfIssue: dateOfIssue.value,
+    body: body.value
+  };
+  emit('DiplomaObjectCreated', createdDiploma)
 }
 
-const CreateConnection = async () => {
-  console.log('Creating connection...');
-  const {data, status} = await axios.post(
-    'http://eid-admin.c4dt.org/connections/create-invitation?auto_accept=true',
-    {
-      "my_label": "student: " + signee.value
-    },
-    {
-    headers: {
-      'Content-Type': 'application/json',
-      'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
-    }
-    })
-  console.log(data);
-  console.log(status);
-
-}
-const GenerateVC = async (connectionID: String) => {
-  console.log('Generating Verifiable Credential...');
-  axios.post('http://eid-admin.c4dt.org/issue-credential/send', {
-    "connection_id": connectionID,
-    "credential_proposal": {
-      "attributes": [
-        {
-          "name": "subject",
-          "value": subject.value,
-          "mime-type": "text/plain"
-        },
-        {
-          "name": "degree",
-          "value": degree.value,
-          "mime-type": "text/plain"
-        },
-        {
-          "name": "document_number",
-          "value": documentNumber.value,
-          "mime-type": "text/plain"
-        },
-        {
-          "name": "body",
-          "value": body.value,
-          "mime-type": "text/plain"
-        },
-        {
-          "value": "Ahmed Elghareeb",
-          "name": signee.value,
-          "mime-type": "text/plain"
-        },
-        {
-          "value": "2018-05-12",
-          "name": dateOfIssue.value,
-          "mime-type": "text/plain"
-        }
-      ],
-      "@type": "issue-credential/1.0/credential-preview"
-    },
-    "auto_remove": "true",
-    "schema_id": "JEfsRZ6qBhToWbGcJDfe2N:2:EPFL_diploma_supplement:1.0.7"
-  },
-  {
-    headers: {
-      'Content-Type': 'application/json',
-      'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
-    }
-  })
-}
 </script>
