@@ -1,5 +1,5 @@
 <template>
-  <DiplomaCredentialForm v-if="step===Step.VC_FORM" @diploma-object-created="createCredentialData" />
+  <IssuerDiplomaCredentialForm v-if="step===Step.VC_FORM" @diploma-object-created="createCredentialData" />
   <div v-if="step!==Step.VC_FORM" class="container mx-auto">
     <p>Name: {{ CredentialData.signee }}</p>
     <p>Document Number: {{ CredentialData.documentNumber }}</p>
@@ -9,7 +9,7 @@
     <p>Message: {{ CredentialData.body }}</p>
     <br>
   </div>
-  <IndyWalletConnectionSetUp v-if="step===Step.CONNECTION_SETUP" :connectionUserName="CredentialData.signee" @wallet-connection-established="SendCredentialToWallet"/>
+  <IssuerIndyWalletConnectionSetUp v-if="step===Step.CONNECTION_SETUP" :connectionUserName="CredentialData.signee" @wallet-connection-established="SendCredentialToWallet"/>
   <div v-if="step===Step.SENDING_VC_TO_WALLET" class="container mx-auto text-center">
     <p>Connection established!</p>
     <p>Connection ID: {{ connectionID }}</p>

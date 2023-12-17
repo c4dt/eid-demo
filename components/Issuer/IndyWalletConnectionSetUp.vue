@@ -25,8 +25,6 @@ const generateQRCodeForConnection = () => {
 
 }
 
-
-
 </script>
 
 <template>
