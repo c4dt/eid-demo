@@ -19,6 +19,7 @@
     <p v-if="step===Step.DONE" class="text-center"> Credential Successfully Sent to wallet</p>
   </div>
 </template>
+
 <script setup lang="ts">
   import {ref} from "vue";
   import type {DiplomaSchema} from "~/composables/VerifiableCredential";
