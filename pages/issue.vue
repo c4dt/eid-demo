@@ -23,6 +23,7 @@
 <script setup lang="ts">
   import {ref} from "vue";
   import type {DiplomaSchema} from "~/composables/VerifiableCredential";
+  import {GenerateVC} from "~/composables/IndyAPI";
 
   enum Step {VC_FORM, CONNECTION_SETUP, SENDING_VC_TO_WALLET, DONE}
   const step = ref(Step.VC_FORM);
@@ -37,9 +38,11 @@
     console.log(`SendCredentialToWallet..... ${walletConnectionID}`)
     connectionID.value = walletConnectionID
     step.value = Step.SENDING_VC_TO_WALLET;
-    // sending to wallet...
-    setTimeout(() => {
-      step.value = Step.DONE;
-    }, 8000)
+    GenerateVC(walletConnectionID, CredentialData.value).then((res) => {
+      console.log(`GenerateVC..... ${res}`)
+      setTimeout(() => {
+        step.value = Step.DONE;
+      }, 4000)
+    })
   }
 </script>

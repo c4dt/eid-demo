@@ -1,29 +1,49 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import QrcodeVue from 'qrcode.vue'
-import {createConnection} from "~/composables/IndyAPI";
+import {checkInvitationIsAccepted, createConnection} from "~/composables/IndyAPI";
 
 const props = defineProps(['connectionUserName'])
 const emit = defineEmits(['walletConnectionEstablished'])
 const connectionUserName = props.connectionUserName
 
 const invitationLink = ref('')
-
-if (invitationLink.value) {
-  console.log("We got a value!")
-}
+let WalletConnectionID: string|null = null
 
 const generateQRCodeForConnection = () => {
-  createConnection(connectionUserName).then((invitation) => {
-    console.log("invitation.....")
-    invitationLink.value = invitation
+  createConnection(connectionUserName).then(({invitationURL, connectionID}) => {
+    console.log(`invitation.....${invitationURL}`)
+    invitationLink.value = invitationURL
+    WalletConnectionID = connectionID
   })
-  const connectionID = "1234567890"
-  setTimeout(() => {
-    emit('walletConnectionEstablished', connectionID);
-  }, 6000)
-
 }
+
+async function checkForAcceptedInvitation(): Promise<boolean|undefined> {
+  if (!invitationLink.value) {
+    console.log("Waiting for invitation to be created!")
+    return
+  }
+  if (!WalletConnectionID) {
+    console.log("Invitation not accepted yet!")
+    return
+  }
+  return checkInvitationIsAccepted(WalletConnectionID).then((isAccepted) => {
+    if (isAccepted) {
+      console.log("Invitation accepted!")
+      emit('walletConnectionEstablished', WalletConnectionID)
+      return true
+    }
+  })
+}
+async function checkForAcceptedInvitationInterval() {
+  await checkForAcceptedInvitation().then((isAccepted) => {
+    if (isAccepted) {
+      console.log(`clearing interval: ${createdInterval}`)
+      clearInterval(createdInterval)
+    }
+  })
+}
+const createdInterval = setInterval(checkForAcceptedInvitationInterval, 3000);
 
 </script>
 
@@ -34,8 +54,8 @@ const generateQRCodeForConnection = () => {
   </div>
 
   <div v-if="invitationLink" class="flex-auto text-center">
-    Please scan this QR code to initiate your diploma verification!
+      Please scan this QR code to initiate your diploma verification!
     <br><br>
-    <qrcode-vue class="mx-auto" :value="invitationLink" level="H" size="300" render-as="svg"/>
+    <qrcode-vue class="mx-auto" :value="invitationLink" level="H" size=300 render-as="svg"/>
   </div>
 </template>

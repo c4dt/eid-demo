@@ -1,27 +1,25 @@
 import axios from "axios";
 import {type DiplomaSchema } from "~/composables/VerifiableCredential";
-export async function createConnection (connectionUserName: string): Promise<string> {
-  console.log('Creating connection...');
-  console.log(connectionUserName)
-  // const {data, status} = await axios.post(
-  //   'http://eid-admin.c4dt.org/connections/create-invitation?auto_accept=true',
-  //   {
-  //     "my_label": "student: " + connectionUserName
-  //   },
-  //   {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
-  //     }
-  //   })
-  // console.log(data);
-  // console.log(status);
-  return "https://www.npmjs.com/package/qrcode.vue"
+export async function createConnection (connectionUserName: string): Promise<{ invitationURL: string; connectionID: string}> {
+  console.log(`Creating connection...${connectionUserName}`);
+  const {data} = await axios.post(
+    'http://eid.c4dt.org:8000/connections/create-invitation?auto_accept=true',
+    {
+      "my_label": "EPFL C4DT"
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
+      }
+    })
+  console.log(data);
+  return {invitationURL: data.invitation_url, connectionID: data.connection_id};
 }
 
 export const GenerateVC = async (connectionID: string, credentialData: DiplomaSchema) => {
   console.log('Generating Verifiable Credential...');
-  axios.post('http://eid-admin.c4dt.org/issue-credential/send', {
+  const {data} = await axios.post('http://eid.c4dt.org:8000/issue-credential/send', {
       "connection_id": connectionID,
       "credential_proposal": {
         "attributes": [
@@ -46,13 +44,13 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
             "mime-type": "text/plain"
           },
           {
-            "value": "Ahmed Elghareeb",
-            "name": credentialData.signee,
+            "name": "signee",
+            "value": credentialData.signee,
             "mime-type": "text/plain"
           },
           {
-            "value": "2018-05-12",
-            "name": credentialData.dateOfIssue,
+            "name": "date_of_issue",
+            "value": credentialData.dateOfIssue,
             "mime-type": "text/plain"
           }
         ],
@@ -67,4 +65,19 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
         'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'  // TODO: Move to .env
       }
     })
+  console.log(data);
+  return
+}
+
+export async function checkInvitationIsAccepted (connectionID: string): Promise<boolean> {
+  console.log('Checking invitation is accepted...');
+  const {data} = await axios.get(
+    `http://eid.c4dt.org:8000/connections/${connectionID}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
+      }
+    })
+  return data.state === 'active';
 }
