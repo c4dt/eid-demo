@@ -3,7 +3,11 @@ This project implements a simple issuer and verifier for the E-ID protocol.
 It uses the swiss E-ID sandbox ledger which is built over Hyperledger Indy,
 and uses Aries Cloud Agent (ACA-Py) as a backend for the issuer and verifier.
 
+![platform screenshot](./docs/platform-screenshot-01.png)
+
 ## Technical Details and system requirements
+### Flow Diagram
+![flow diagram](./docs/eid-flow-diagram.jpg)
 ### External dependencies
 **Ledger**  
 This project uses the [Swiss E-ID sandbox ledger](https://explorer.sandbox.ssi.ch/home/SANDBOX)
