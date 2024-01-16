@@ -20,7 +20,6 @@
   import {ref} from "vue";
   import QrcodeVue from "qrcode.vue";
   import {checkInvitationIsAccepted, createConnection} from "~/composables/IndyAPI";
-  import type {DiplomaSchema} from "~/composables/VerifiableCredential";
 
   enum Step {CONNECTION_SETUP, REQUESTING_CREDENTIALS, DONE}
   const step = ref(Step.CONNECTION_SETUP);
@@ -31,7 +30,7 @@
   const proofRequestDocumentNumber = ref("");
 
   const generateQRCodeForConnection = () => {
-    createConnection("Verifier!").then(({invitationURL, connectionID}) => {
+    createConnection(false).then(({invitationURL, connectionID}) => {
       console.log(`invitation.....${invitationURL}`)
       invitationLink.value = invitationURL
       WalletConnectionID.value = connectionID
@@ -47,7 +46,7 @@
       console.log("Invitation not accepted yet!")
       return
     }
-    return checkInvitationIsAccepted(WalletConnectionID.value).then((isAccepted) => {
+    return checkInvitationIsAccepted(WalletConnectionID.value, false).then((isAccepted) => {
       if (isAccepted) {
         console.log("Invitation accepted!")
         step.value = Step.REQUESTING_CREDENTIALS

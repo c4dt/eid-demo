@@ -1,25 +1,55 @@
 import axios from "axios";
 import {type DiplomaSchema } from "~/composables/VerifiableCredential";
-export async function createConnection (connectionUserName: string): Promise<{ invitationURL: string; connectionID: string}> {
-  console.log(`Creating connection...${connectionUserName}`);
+
+export async function createConnection (isIssuer: boolean): Promise<{ invitationURL: string; connectionID: string}> {
+  let connectorName, connectionDomain, connectionAPIKey: string
+  if (isIssuer) {
+    connectorName = 'EPFL';
+    connectionDomain = process.env.ISSUER_URL;
+    connectionAPIKey = process.env.ISSUER_API_KEY;
+  } else {
+    connectorName = 'Leo Inc.';
+    connectionDomain = process.env.VERIFIER_URL;
+    connectionDomain = process.env.VERIFIER_API_KEY;
+  }
   const {data} = await axios.post(
-    'http://eid.c4dt.org:8000/connections/create-invitation?auto_accept=true',
+    `${connectionDomain}/connections/create-invitation?auto_accept=true`,
     {
-      "my_label": "EPFL C4DT"
+      "my_label": connectorName
     },
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
+        'X-API-KEY': connectionAPIKey
       }
     })
-  console.log(data);
   return {invitationURL: data.invitation_url, connectionID: data.connection_id};
 }
 
+export async function checkInvitationIsAccepted (connectionID: string, isIssuer: boolean): Promise<boolean> {
+  let connectionDomain, connectionAPIKey: string
+  if (isIssuer) {
+    connectionDomain = process.env.ISSUER_URL;
+    connectionAPIKey = process.env.ISSUER_API_KEY;
+  } else {
+    connectionDomain = process.env.VERIFIER_URL;
+    connectionDomain = process.env.VERIFIER_API_KEY;
+  }
+  console.log('Checking invitation is accepted...');
+  const {data} = await axios.get(
+    `${connectionDomain}/connections/${connectionID}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': connectionAPIKey
+      }
+    })
+  return data.state === 'active';
+}
+
 export const GenerateVC = async (connectionID: string, credentialData: DiplomaSchema) => {
-  console.log('Generating Verifiable Credential...');
-  const {data} = await axios.post('http://eid.c4dt.org:8000/issue-credential/send', {
+  console.log('Generating Verifiable Credential');
+  const {data} = await axios.post(`${process.env.ISSUER_URL}/issue-credential/send`, {
       "connection_id": connectionID,
       "credential_proposal": {
         "attributes": [
@@ -62,30 +92,17 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'  // TODO: Move to .env
+        'X-API-KEY': process.env.ISSUER_API_KEY
       }
     })
   console.log(data);
   return
 }
 
-export async function checkInvitationIsAccepted (connectionID: string): Promise<boolean> {
-  console.log('Checking invitation is accepted...');
-  const {data} = await axios.get(
-    `http://eid.c4dt.org:8000/connections/${connectionID}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
-      }
-    })
-  return data.state === 'active';
-}
-
-export async function sendProofRequest (connectionID: string, proofRequest: any): Promise<void> {
-  console.log('Sending proof request...');
+export async function sendProofRequest (connectionID: string): Promise<void> {
+  console.log('Sending proof request');
   const {data} = await axios.post(
-    'http://eid.c4dt.org:8000/present-proof/send-request',
+    `${process.env.VERIFIER_URL}/present-proof/send-request`,
     {
       "connection_id": connectionID,
       "auto_remove": false,
@@ -117,7 +134,7 @@ export async function sendProofRequest (connectionID: string, proofRequest: any)
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
+        'X-API-KEY': process.env.VERIFIER_API_KEY
       }
     })
   return data
@@ -126,15 +143,13 @@ export async function sendProofRequest (connectionID: string, proofRequest: any)
 export async function checkProofRequestIsAccepted (proofRequestID: string): Promise<boolean> {
   console.log('Checking proof request is accepted...');
   let {data} = await axios.get(
-    `http://eid.c4dt.org:8000/present-proof/records/${proofRequestID}`,
+    `${process.env.VERIFIER_URL}/present-proof/records/${proofRequestID}`,
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
+        'X-API-KEY': process.env.VERIFIER_API_KEY
       }
     })
-  console.log("Printing data......");
-  console.log(data);
   let accepted = data.state === 'verified';
   if (accepted) {
     data = {

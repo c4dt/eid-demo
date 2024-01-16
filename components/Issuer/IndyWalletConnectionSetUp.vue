@@ -11,7 +11,7 @@ const invitationLink = ref('')
 let WalletConnectionID: string|null = null
 
 const generateQRCodeForConnection = () => {
-  createConnection(connectionUserName).then(({invitationURL, connectionID}) => {
+  createConnection(true).then(({invitationURL, connectionID}) => {
     console.log(`invitation.....${invitationURL}`)
     invitationLink.value = invitationURL
     WalletConnectionID = connectionID
@@ -27,7 +27,7 @@ async function checkForAcceptedInvitation(): Promise<boolean|undefined> {
     console.log("Invitation not accepted yet!")
     return
   }
-  return checkInvitationIsAccepted(WalletConnectionID).then((isAccepted) => {
+  return checkInvitationIsAccepted(WalletConnectionID, true).then((isAccepted) => {
     if (isAccepted) {
       console.log("Invitation accepted!")
       emit('walletConnectionEstablished', WalletConnectionID)

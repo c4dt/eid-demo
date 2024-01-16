@@ -29,11 +29,13 @@
   const step = ref(Step.VC_FORM);
   const CredentialData = ref({} as DiplomaSchema);
   const connectionID = ref("");
+
   function createCredentialData(createdCredential: DiplomaSchema)   {
     console.log(`createCredentialData..... ${createdCredential}`)
     CredentialData.value = createdCredential;
     step.value = Step.CONNECTION_SETUP;
   }
+
   function SendCredentialToWallet(walletConnectionID: string) {
     console.log(`SendCredentialToWallet..... ${walletConnectionID}`)
     connectionID.value = walletConnectionID
@@ -42,7 +44,7 @@
       console.log(`GenerateVC..... ${res}`)
       setTimeout(() => {
         step.value = Step.DONE;
-      }, 4000)
+      }, 2000)
     })
   }
 </script>
