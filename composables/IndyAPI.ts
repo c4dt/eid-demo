@@ -81,3 +81,66 @@ export async function checkInvitationIsAccepted (connectionID: string): Promise<
     })
   return data.state === 'active';
 }
+
+export async function sendProofRequest (connectionID: string, proofRequest: any): Promise<void> {
+  console.log('Sending proof request...');
+  const {data} = await axios.post(
+    'http://eid.c4dt.org:8000/present-proof/send-request',
+    {
+      "connection_id": connectionID,
+      "auto_remove": false,
+      "auto_verify": true,
+      "proof_request": {
+        "name": "Diploma proof request",
+        "nonce": "1234567890",
+        "requested_predicates": {},
+        "requested_attributes": {
+          "info": {
+            "names": [
+              "subject",
+              "degree",
+              "document_number",
+            ],
+            "restrictions": [
+              {
+                "schema_name": "EPFL_diploma_supplement",
+                "schema_version": "1.0.7",
+                "issuer_did": "JEfsRZ6qBhToWbGcJDfe2N"
+              }
+            ]
+          }
+        },
+        "version": "1.0"
+      },
+      "trace": "true"
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
+      }
+    })
+  return data
+}
+
+export async function checkProofRequestIsAccepted (proofRequestID: string): Promise<boolean> {
+  console.log('Checking proof request is accepted...');
+  let {data} = await axios.get(
+    `http://eid.c4dt.org:8000/present-proof/records/${proofRequestID}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': 'NVRGbAQdIPGBritg3TzDYhpAu'
+      }
+    })
+  console.log("Printing data......");
+  console.log(data);
+  let accepted = data.state === 'verified';
+  if (accepted) {
+    data = {
+      subject: data.presentation.requested_proof.revealed_attr_groups.info.values.subject.raw,
+      degree: data.presentation.requested_proof.revealed_attr_groups.info.values.degree.raw,
+      documentNumber: data.presentation.requested_proof.revealed_attr_groups.info.values.document_number.raw,}
+  }
+  return {isAccepted: accepted, data: data};
+}
