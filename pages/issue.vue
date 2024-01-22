@@ -6,6 +6,7 @@
     <p>Subject: {{ CredentialData.subject }}</p>
     <p>Degree: {{ CredentialData.degree }}</p>
     <p>Date of issue: {{ CredentialData.dateOfIssue }}</p>
+    <p>Date of expiry: {{ CredentialData.dateOfExpiry }}</p>
     <p>Message: {{ CredentialData.body }}</p>
     <br>
   </div>

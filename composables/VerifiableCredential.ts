@@ -5,5 +5,5 @@ export interface DiplomaSchema {
   documentNumber: string;
   body: string;
   dateOfIssue: string;
-
+  dateOfExpiry: string;
 }

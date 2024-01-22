@@ -45,6 +45,13 @@
             </div>
           </div>
 
+          <div class="sm:col-span-1">
+            <label for="dateOfExpiry" class="block text-sm font-medium leading-6 text-gray-900">Date of expiry</label>
+            <div class="mt-2">
+              <input type="date" v-model="dateOfExpiry" name="date-of-expiry" id="dateOfExpiry" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            </div>
+          </div>
+
           <div class="sm:col-span-6 sm:col-start-1">
             <label for="body" class="block text-sm font-medium leading-6 text-gray-900">Message</label>
             <div class="mt-2">
@@ -71,7 +78,8 @@ const signee = ref('Ahmed E.');
 const documentNumber = ref('A001');
 const subject = ref('Mathematics');
 const degree = ref('A+');
-const dateOfIssue = ref('2013-09-01');
+const dateOfIssue = ref('2024-01-01');
+const dateOfExpiry = ref('2025-01-01');
 const body = ref('Congrats!');
 
 const CreateVCData = async () => {
@@ -81,6 +89,7 @@ const CreateVCData = async () => {
     subject: subject.value,
     degree: degree.value,
     dateOfIssue: dateOfIssue.value,
+    dateOfExpiry: dateOfExpiry.value,
     body: body.value
   };
   emit('DiplomaObjectCreated', createdDiploma)
