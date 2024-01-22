@@ -1,16 +1,18 @@
 import axios from "axios";
 import {type DiplomaSchema } from "~/composables/VerifiableCredential";
 
+
 export async function createConnection (isIssuer: boolean): Promise<{ invitationURL: string; connectionID: string}> {
+  const config = useRuntimeConfig()
   let connectorName, connectionDomain, connectionAPIKey: string
   if (isIssuer) {
     connectorName = 'EPFL';
-    connectionDomain = process.env.ISSUER_URL;
-    connectionAPIKey = process.env.ISSUER_API_KEY;
+    connectionDomain = config.public.issuerURL;
+    connectionAPIKey = config.public.issuerAPIKey;
   } else {
     connectorName = 'Leo Inc.';
-    connectionDomain = process.env.VERIFIER_URL;
-    connectionDomain = process.env.VERIFIER_API_KEY;
+    connectionDomain = config.public.verifierURL;
+    connectionAPIKey = config.public.verifierAPIKey;
   }
   const {data} = await axios.post(
     `${connectionDomain}/connections/create-invitation?auto_accept=true`,
@@ -27,13 +29,14 @@ export async function createConnection (isIssuer: boolean): Promise<{ invitation
 }
 
 export async function checkInvitationIsAccepted (connectionID: string, isIssuer: boolean): Promise<boolean> {
+  const config = useRuntimeConfig()
   let connectionDomain, connectionAPIKey: string
   if (isIssuer) {
-    connectionDomain = process.env.ISSUER_URL;
-    connectionAPIKey = process.env.ISSUER_API_KEY;
+    connectionDomain = config.public.issuerURL;
+    connectionAPIKey = config.public.issuerAPIKey;
   } else {
-    connectionDomain = process.env.VERIFIER_URL;
-    connectionDomain = process.env.VERIFIER_API_KEY;
+    connectionDomain = config.public.verifierURL;
+    connectionAPIKey = config.public.verifierAPIKey;
   }
   console.log('Checking invitation is accepted...');
   const {data} = await axios.get(
@@ -48,8 +51,9 @@ export async function checkInvitationIsAccepted (connectionID: string, isIssuer:
 }
 
 export const GenerateVC = async (connectionID: string, credentialData: DiplomaSchema) => {
+  const config = useRuntimeConfig()
   console.log('Generating Verifiable Credential');
-  const {data} = await axios.post(`${process.env.ISSUER_URL}/issue-credential/send`, {
+  const {data} = await axios.post(`${config.public.issuerURL}/issue-credential/send`, {
       "connection_id": connectionID,
       "credential_proposal": {
         "attributes": [
@@ -92,7 +96,7 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': process.env.ISSUER_API_KEY
+        'X-API-KEY': config.public.issuerAPIKey
       }
     })
   console.log(data);
@@ -100,9 +104,10 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
 }
 
 export async function sendProofRequest (connectionID: string): Promise<void> {
+  const config = useRuntimeConfig()
   console.log('Sending proof request');
   const {data} = await axios.post(
-    `${process.env.VERIFIER_URL}/present-proof/send-request`,
+    `${config.public.verifierURL}/present-proof/send-request`,
     {
       "connection_id": connectionID,
       "auto_remove": false,
@@ -134,20 +139,21 @@ export async function sendProofRequest (connectionID: string): Promise<void> {
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': process.env.VERIFIER_API_KEY
+        'X-API-KEY': config.public.verifierAPIKey
       }
     })
   return data
 }
 
-export async function checkProofRequestIsAccepted (proofRequestID: string): Promise<boolean> {
+export async function checkProofRequestIsAccepted (proofRequestID: string): Promise<{ isAccepted: boolean; data: object}> {
+  const config = useRuntimeConfig()
   console.log('Checking proof request is accepted...');
   let {data} = await axios.get(
-    `${process.env.VERIFIER_URL}/present-proof/records/${proofRequestID}`,
+    `${config.public.verifierURL}/present-proof/records/${proofRequestID}`,
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': process.env.VERIFIER_API_KEY
+        'X-API-KEY': config.public.verifierAPIKey
       }
     })
   let accepted = data.state === 'verified';

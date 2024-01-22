@@ -27,6 +27,9 @@ This project is written in Typescript and uses the [Nuxt framework](https://nuxt
 It uses [Bun](https://bun.sh/) as a typescript build and runtime tool.
 
 ## How To Run
+first you need to create a `.env` file in the root directory of the project.  
+This file should contain the variables given in the `.env.example` file.
+
 ```bash
 # To install dependencies
 $ bun install
