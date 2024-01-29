@@ -86,12 +86,17 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
             "name": "date_of_issue",
             "value": credentialData.dateOfIssue,
             "mime-type": "text/plain"
+          },
+          {
+            "name": "date_of_expiry",
+            "value": String(Date.parse(credentialData.dateOfExpiry)),
+            "mime-type": "text/plain"
           }
         ],
         "@type": "issue-credential/1.0/credential-preview"
       },
       "auto_remove": "true",
-      "schema_id": "JEfsRZ6qBhToWbGcJDfe2N:2:EPFL_diploma_supplement:1.0.7"
+      "schema_id": "JEfsRZ6qBhToWbGcJDfe2N:2:EPFL_diploma_supplement:1.0.8"
     },
     {
       headers: {
@@ -114,19 +119,33 @@ export async function sendProofRequest (connectionID: string): Promise<void> {
       "auto_verify": true,
       "proof_request": {
         "name": "Diploma proof request",
-        "nonce": "1234567890",
-        "requested_predicates": {},
+        "requested_predicates": {
+          predicate_0: {
+            name: "date_of_expiry",
+            p_type: ">=",
+            p_value: Date.now(),
+            restrictions: [
+              {
+                "schema_name": "EPFL_diploma_supplement",
+                "schema_version": "1.0.8",
+                "issuer_did": "JEfsRZ6qBhToWbGcJDfe2N"
+              }
+            ],
+          },
+        },
         "requested_attributes": {
           "info": {
             "names": [
               "subject",
               "degree",
               "document_number",
+              "date_of_issue",
+              "date_of_expiry",
             ],
             "restrictions": [
               {
                 "schema_name": "EPFL_diploma_supplement",
-                "schema_version": "1.0.7",
+                "schema_version": "1.0.8",
                 "issuer_did": "JEfsRZ6qBhToWbGcJDfe2N"
               }
             ]
