@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-  definePageMeta({layout: 'epfl'})
+  definePageMeta({layout: 'acme'})
 
   import {ref} from "vue";
   import type {DiplomaSchema} from "~/composables/VerifiableCredential";

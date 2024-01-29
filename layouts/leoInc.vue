@@ -95,10 +95,9 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 const route = useRoute()
 
 const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-      'https://i.ibb.co/9YCdfLR/Screenshot-2024-01-24-at-20-33-05.png',
+  name: 'HR guy',
+  email: 'guy@leoinc.com',
+  imageUrl: 'https://flowbite.com/docs/images/people/profile-picture-1.jpg',
 }
 const navigation = [
   { name: 'Home', href: '/verifier', current: route.name === 'verifier-home' },

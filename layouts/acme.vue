@@ -1,13 +1,23 @@
 <template>
-  <html class="h-full bg-gray-100">
-    <body class="h-full">
+  <html>
+    <body class="h-full bg-gray-100">
       <div class="min-h-full">
         <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
           <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 items-center justify-between">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
-                  <img class="w-24" src="https://c4dt.epfl.ch/wp-content/themes/epfl/assets/svg/epfl-logo.svg?color=indigo&shade=500" alt="Your Company" />
+                  <svg width="200" height="100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:red;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:yellowgreen;stop-opacity:1" />
+                      </linearGradient>
+                    </defs>
+                    <text x="5" y="60" font-family="cursive" font-size="30" font-weight="bold" fill="url(#gradient)">ACME Schools</text>
+                  </svg>
+
+
                 </div>
                 <div class="hidden md:block">
                   <div class="ml-10 flex items-baseline space-x-4">

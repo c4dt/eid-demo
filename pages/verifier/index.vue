@@ -26,7 +26,7 @@
 
           </div>
           <p class="mt-4 text-base leading-relaxed text-gray-600 group-hover:text-white">
-            This platform provides different activities for EPFL HR department.
+            This platform provides different activities for ACME Schools HR department.
           </p>
         </div>
         <div class="grid grid-cols-1 gap-2 mt-12 sm:grid-cols-3 lg:mt-20">

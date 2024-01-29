@@ -3,7 +3,7 @@
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-12">
         <h2 class="text-base font-semibold leading-7 text-gray-900">Credential Information</h2>
-        <p class="mt-1 text-sm leading-6 text-gray-600">This form represents the EPFL degree EPFL_diploma_supplement:1.0.7 schema.</p>
+        <p class="mt-1 text-sm leading-6 text-gray-600">This form represents the ACME schools degree EPFL_diploma_supplement:1.0.7 schema.</p>
 
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div class="sm:col-span-4">

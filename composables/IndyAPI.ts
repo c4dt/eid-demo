@@ -6,7 +6,7 @@ export async function createConnection (isIssuer: boolean): Promise<{ invitation
   const config = useRuntimeConfig()
   let connectorName, connectionDomain, connectionAPIKey: string
   if (isIssuer) {
-    connectorName = 'EPFL';
+    connectorName = 'ACME Schools';
     connectionDomain = config.public.issuerURL;
     connectionAPIKey = config.public.issuerAPIKey;
   } else {

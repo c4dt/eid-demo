@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({layout: 'epfl'})
+definePageMeta({layout: 'acme'})
 </script>
 
 <template>
