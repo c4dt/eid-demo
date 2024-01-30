@@ -7,17 +7,7 @@
             <div class="flex h-16 items-center justify-between">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
-                  <svg width="200" height="100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:red;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:yellowgreen;stop-opacity:1" />
-                      </linearGradient>
-                    </defs>
-                    <text x="5" y="60" font-family="cursive" font-size="30" font-weight="bold" fill="url(#gradient)">ACME Schools</text>
-                  </svg>
-
-
+                  <img class="w-60" src="/assets/acme-logo.svg" alt="Your Company" />
                 </div>
                 <div class="hidden md:block">
                   <div class="ml-10 flex items-baseline space-x-4">
