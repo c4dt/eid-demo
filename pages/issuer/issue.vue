@@ -14,25 +14,28 @@
       </ol>
     </nav>
   </div>
-  <br><br>
-  <IssuerDiplomaCredentialForm v-if="step===Step.VC_FORM" @diploma-object-created="createCredentialData" />
-  <div v-if="step!==Step.VC_FORM" class="container mx-auto">
-    <p>Name: {{ CredentialData.signee }}</p>
-    <p>Document Number: {{ CredentialData.documentNumber }}</p>
-    <p>Subject: {{ CredentialData.subject }}</p>
-    <p>Degree: {{ CredentialData.degree }}</p>
-    <p>Date of issue: {{ CredentialData.dateOfIssue }}</p>
-    <p>Message: {{ CredentialData.body }}</p>
-    <br>
-  </div>
-  <IssuerIndyWalletConnectionSetUp v-if="step===Step.CONNECTION_SETUP" :connectionUserName="CredentialData.signee" @wallet-connection-established="SendCredentialToWallet"/>
-  <div v-if="step===Step.SENDING_VC_TO_WALLET" class="container mx-auto text-center">
-    <p>Connection established!</p>
-    <p>Connection ID: {{ connectionID }}</p>
-    <p>Sending Credential to wallet..</p>
-  </div>
-  <div>
-    <p v-if="step===Step.DONE" class="text-center"> Credential Successfully Sent to wallet</p>
+  <div class="flex mt-14">
+    <div class="flex-1 p-4">
+      <IssuerDiplomaCredentialForm v-if="step===Step.VC_FORM" @diploma-object-created="createCredentialData" @add-to-log="addToLog" />
+      <div v-if="step!==Step.VC_FORM" class="container mx-auto">
+        <p>Name: {{ CredentialData.signee }}</p>
+        <p>Document Number: {{ CredentialData.documentNumber }}</p>
+        <p>Subject: {{ CredentialData.subject }}</p>
+        <p>Degree: {{ CredentialData.degree }}</p>
+        <p>Date of issue: {{ CredentialData.dateOfIssue }}</p>
+        <p>Message: {{ CredentialData.body }}</p>
+        <br>
+      </div>
+      <IssuerIndyWalletConnectionSetUp v-if="step===Step.CONNECTION_SETUP" :connectionUserName="CredentialData.signee" @wallet-connection-established="SendCredentialToWallet"/>
+      <div v-if="step===Step.SENDING_VC_TO_WALLET" class="container mx-auto text-center">
+        <p>Connection established!</p>
+        <p>Connection ID: {{ connectionID }}</p>
+        <p>Sending Credential to wallet..</p>
+      </div>
+      <div>
+        <p v-if="step===Step.DONE" class="text-center"> Credential Successfully Sent to wallet</p>
+      </div>
+    </div>
   </div>
 </template>
 
