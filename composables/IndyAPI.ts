@@ -99,11 +99,10 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
         'X-API-KEY': config.public.issuerAPIKey
       }
     })
-  console.log(data);
   return
 }
 
-export async function sendProofRequest (connectionID: string): Promise<void> {
+export async function sendProofRequest (connectionID: string): Promise<object> {
   const config = useRuntimeConfig()
   console.log('Sending proof request');
   const {data} = await axios.post(

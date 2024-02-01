@@ -26,6 +26,7 @@ async function checkForAcceptedProofRequest(): Promise<boolean|undefined> {
     }
   })
 }
+
 async function checkForAcceptedProofRequestInterval() {
   await checkForAcceptedProofRequest().then((isAccepted) => {
     if (isAccepted) {
@@ -35,7 +36,6 @@ async function checkForAcceptedProofRequestInterval() {
   })
 }
 const createdInterval = setInterval(checkForAcceptedProofRequestInterval, 3000);
-
 </script>
 
 <template>

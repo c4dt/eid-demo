@@ -7,7 +7,7 @@
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center">
             <div class="flex-shrink-0 mt-6">
-              <img class="w-60" src="/assets/LEO_Inc_Animation_Friendly.svg" alt="Your Company" />
+              <img class="w-60" src="/assets/leo_inc_logo.svg" alt="Leo Inc Logo" />
             </div>
             <div class="hidden md:block">
               <div class="ml-10 flex items-baseline space-x-4">
