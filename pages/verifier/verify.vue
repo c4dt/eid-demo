@@ -56,6 +56,7 @@
   const proofRequestDegree = ref("");
   const proofRequestDocumentNumber = ref("");
   const logMessages = ref([] as string[]);
+  let createdInterval: number = null
 
   const generateQRCodeForConnection = () => {
     createConnection(false).then(({invitationURL, connectionID}) => {
@@ -63,6 +64,7 @@
       invitationLink.value = invitationURL
       WalletConnectionID.value = connectionID
       addToLog('[Verifier] Creating connection QRCode')
+      createdInterval = setInterval(manageIntervalForAcceptedInvitation, 3000);
     })
   }
 
@@ -93,7 +95,6 @@
       }
     })
   }
-  const createdInterval = setInterval(manageIntervalForAcceptedInvitation, 3000);
 
   async function displayProof(data) {
     addToLog("[Verifier] Received proof from wallet!")
