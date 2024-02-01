@@ -36,6 +36,12 @@
         <p v-if="step===Step.DONE" class="text-center"> Credential Successfully Sent to wallet</p>
       </div>
     </div>
+    <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-8">
+      <h2 class="text-xl font-semibold">Updates</h2>
+      <ol class="list-decimal">
+        <li v-for="message in logMessages">{{ message }}</li>
+      </ol>
+    </div>
   </div>
 </template>
 
@@ -50,15 +56,18 @@
   const step = ref(Step.VC_FORM);
   const CredentialData = ref({} as DiplomaSchema);
   const connectionID = ref("");
+  const logMessages = ref([] as string[]);
 
   function createCredentialData(createdCredential: DiplomaSchema)   {
     console.log(`createCredentialData..... ${createdCredential}`)
     CredentialData.value = createdCredential;
     step.value = Step.CONNECTION_SETUP;
+    addToLog("[Issuer] Credential Data saved")
   }
 
   function SendCredentialToWallet(walletConnectionID: string) {
-    console.log(`SendCredentialToWallet..... ${walletConnectionID}`)
+    addToLog("[Wallet] Accepted issuer connection")
+    addToLog("[Issuer] Sending Credential to wallet..")
     connectionID.value = walletConnectionID
     step.value = Step.SENDING_VC_TO_WALLET;
     GenerateVC(walletConnectionID, CredentialData.value).then((res) => {
@@ -67,5 +76,10 @@
         step.value = Step.DONE;
       }, 2000)
     })
+    addToLog("[Issuer] Credential sent successfully!")
+  }
+
+  function addToLog(logMessage: string) {
+    logMessages.value.push(logMessage)
   }
 </script>

@@ -4,7 +4,7 @@ import QrcodeVue from 'qrcode.vue'
 import {checkInvitationIsAccepted, createConnection} from "~/composables/IndyAPI";
 
 const props = defineProps(['connectionUserName'])
-const emit = defineEmits(['walletConnectionEstablished'])
+const emit = defineEmits(['walletConnectionEstablished', 'addToLog'])
 const connectionUserName = props.connectionUserName
 
 const invitationLink = ref('')
@@ -15,6 +15,7 @@ const generateQRCodeForConnection = () => {
     console.log(`invitation.....${invitationURL}`)
     invitationLink.value = invitationURL
     WalletConnectionID = connectionID
+    emit('addToLog', '[Issuer] Creating connection QRCode')
   })
 }
 

@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type {DiplomaSchema} from "~/composables/VerifiableCredential";
-const emit = defineEmits(['DiplomaObjectCreated']);
+const emit = defineEmits(['DiplomaObjectCreated', 'AddToLog']);
 
 const signee = ref('Ahmed E.');
 const documentNumber = ref('A001');

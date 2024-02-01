@@ -3,13 +3,14 @@ import { ref } from 'vue'
 import {checkProofRequestIsAccepted, sendProofRequest} from "~/composables/IndyAPI";
 
 const props = defineProps(['connectionID'])
-const emit = defineEmits(['verifiableCredentialProof'])
+const emit = defineEmits(['verifiableCredentialProof', 'addToLog'])
 const connectionID = props.connectionID
 const proofRequestID = ref('')
 
 const sendVCProofRequest = () => {
   sendProofRequest(connectionID).then(({presentation_exchange_id}) => {
     proofRequestID.value = presentation_exchange_id
+    emit('addToLog', '[Verifier] sent request for proof to wallet')
   })
 }
 

@@ -32,6 +32,12 @@
           <p>Document Number: {{ proofRequestDocumentNumber }}</p>
       </div>
     </div>
+    <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-8">
+      <h2 class="text-xl font-semibold">Updates</h2>
+      <ol class="list-decimal">
+        <li v-for="message in logMessages">{{ message }}</li>
+      </ol>
+    </div>
   </div>
 </template>
 
@@ -49,12 +55,14 @@
   const proofRequestSubject = ref("");
   const proofRequestDegree = ref("");
   const proofRequestDocumentNumber = ref("");
+  const logMessages = ref([] as string[]);
 
   const generateQRCodeForConnection = () => {
     createConnection(false).then(({invitationURL, connectionID}) => {
       console.log(`invitation.....${invitationURL}`)
       invitationLink.value = invitationURL
       WalletConnectionID.value = connectionID
+      addToLog('[Verifier] Creating connection QRCode')
     })
   }
 
@@ -71,6 +79,7 @@
       if (isAccepted) {
         console.log("Invitation accepted!")
         step.value = Step.REQUESTING_CREDENTIALS
+        addToLog("[Wallet] accepted verifier connection!")
         return true
       }
     })
@@ -87,10 +96,15 @@
   const createdInterval = setInterval(manageIntervalForAcceptedInvitation, 3000);
 
   async function displayProof(data) {
+    addToLog("[Verifier] Received proof from wallet!")
+    addToLog("[Verifier] Proof is validated against the ledger!")
     step.value = Step.DONE
     proofRequestSubject.value = data.subject
     proofRequestDegree.value = data.degree
     proofRequestDocumentNumber.value = data.documentNumber
   }
 
+  function addToLog(logMessage: string) {
+    logMessages.value.push(logMessage)
+  }
 </script>
