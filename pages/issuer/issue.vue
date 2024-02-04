@@ -39,7 +39,9 @@
     <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-8">
       <h2 class="text-xl font-semibold">Updates</h2>
       <ol class="list-decimal">
-        <li v-for="message in logMessages">{{ message }}</li>
+        <li v-for="message in logMessages">
+          [{{ message.source }}<p v-if="message.target !== undefined"> -> {{ message.target }}</p>] {{ message.message }}
+        </li>
       </ol>
     </div>
   </div>
@@ -49,25 +51,25 @@
   definePageMeta({layout: 'acme'})
 
   import {ref} from "vue";
-  import type {DiplomaSchema} from "~/composables/VerifiableCredential";
+  import type {ActionLog, DiplomaSchema} from "~/composables/VerifiableCredential";
   import {GenerateVC} from "~/composables/IndyAPI";
 
   enum Step {VC_FORM, CONNECTION_SETUP, SENDING_VC_TO_WALLET, DONE}
   const step = ref(Step.VC_FORM);
   const CredentialData = ref({} as DiplomaSchema);
   const connectionID = ref("");
-  const logMessages = ref([] as string[]);
+  const logMessages = ref([] as ActionLog[]);
 
   function createCredentialData(createdCredential: DiplomaSchema)   {
     console.log(`createCredentialData..... ${createdCredential}`)
     CredentialData.value = createdCredential;
     step.value = Step.CONNECTION_SETUP;
-    addToLog("[Issuer] Credential Data saved")
+    addToLog("Credential Data saved", 'Issuer', null)
   }
 
   function SendCredentialToWallet(walletConnectionID: string) {
-    addToLog("[Wallet] Accepted issuer connection")
-    addToLog("[Issuer] Sending Credential to wallet..")
+    addToLog("Accepted connection", "Wallet", "Issuer")
+    addToLog("Sending Credential", "Issuer", "Wallet")
     connectionID.value = walletConnectionID
     step.value = Step.SENDING_VC_TO_WALLET;
     GenerateVC(walletConnectionID, CredentialData.value).then((res) => {
@@ -76,10 +78,14 @@
         step.value = Step.DONE;
       }, 2000)
     })
-    addToLog("[Issuer] Credential sent successfully!")
+    addToLog("Credential received successfully!", "Wallet", "Issuer")
   }
 
-  function addToLog(logMessage: string) {
-    logMessages.value.push(logMessage)
+  function addToLog(message: string, source: string = "Issuer", target: string | null = "Wallet") {
+    logMessages.value.push({
+      source: source,
+      target: target,
+      message: message
+    })
   }
 </script>

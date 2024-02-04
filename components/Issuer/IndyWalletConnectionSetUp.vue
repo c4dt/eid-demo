@@ -15,7 +15,7 @@ const generateQRCodeForConnection = () => {
     console.log(`invitation.....${invitationURL}`)
     invitationLink.value = invitationURL
     WalletConnectionID = connectionID
-    emit('addToLog', '[Issuer] Creating connection QRCode')
+    emit('addToLog', 'Creating connection QRCode', 'Issuer')
   })
 }
 

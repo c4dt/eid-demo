@@ -7,3 +7,9 @@ export interface DiplomaSchema {
   dateOfIssue: string;
 
 }
+
+export interface ActionLog {
+  source: string;
+  target?: string;
+  message: string;
+}

@@ -35,13 +35,17 @@
     <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-8">
       <h2 class="text-xl font-semibold">Updates</h2>
       <ol class="list-decimal">
-        <li v-for="message in logMessages">{{ message }}</li>
+        <li v-for="message in logMessages">
+          [{{ message.source }}<p v-if="message.target !== undefined"> -> {{ message.target }}</p>] {{ message.message }}
+        </li>
       </ol>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+  import {ActionLog} from "~/composables/VerifiableCredential";
+
   definePageMeta({layout: 'leo-inc'})
 
   import {ref} from "vue";
@@ -55,7 +59,7 @@
   const proofRequestSubject = ref("");
   const proofRequestDegree = ref("");
   const proofRequestDocumentNumber = ref("");
-  const logMessages = ref([] as string[]);
+  const logMessages = ref([] as ActionLog[]);
   let createdInterval: number = null
 
   const generateQRCodeForConnection = () => {
@@ -63,7 +67,7 @@
       console.log(`invitation.....${invitationURL}`)
       invitationLink.value = invitationURL
       WalletConnectionID.value = connectionID
-      addToLog('[Verifier] Creating connection QRCode')
+      addToLog('Creating connection QRCode', 'Verifier', null)
       createdInterval = setInterval(manageIntervalForAcceptedInvitation, 3000);
     })
   }
@@ -81,7 +85,7 @@
       if (isAccepted) {
         console.log("Invitation accepted!")
         step.value = Step.REQUESTING_CREDENTIALS
-        addToLog("[Wallet] accepted verifier connection!")
+        addToLog("accepted connection!", 'Wallet', 'Verifier')
         return true
       }
     })
@@ -97,15 +101,19 @@
   }
 
   async function displayProof(data) {
-    addToLog("[Verifier] Received proof from wallet!")
-    addToLog("[Verifier] Proof is validated against the ledger!")
+    addToLog("Sent Proof!", "Wallet", 'Verifier')
+    addToLog("Validating proof!", 'Verifier', 'Ledger')
     step.value = Step.DONE
     proofRequestSubject.value = data.subject
     proofRequestDegree.value = data.degree
     proofRequestDocumentNumber.value = data.documentNumber
   }
 
-  function addToLog(logMessage: string) {
-    logMessages.value.push(logMessage)
+  function addToLog(message: string, source: string = "Issuer", target?: string = "Wallet") {
+    logMessages.value.push({
+      source: source,
+      target: target,
+      message: message
+    })
   }
 </script>
