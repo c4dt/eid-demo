@@ -102,7 +102,7 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
   return
 }
 
-export async function sendProofRequest (connectionID: string): Promise<object> {
+export async function sendProofRequest (connectionID: string): Promise<string> {
   const config = useRuntimeConfig()
   console.log('Sending proof request');
   const {data} = await axios.post(
@@ -141,7 +141,7 @@ export async function sendProofRequest (connectionID: string): Promise<object> {
         'X-API-KEY': config.public.verifierAPIKey
       }
     })
-  return data
+  return data.presentation_exchange_id;
 }
 
 export async function checkProofRequestIsAccepted (proofRequestID: string): Promise<{ isAccepted: boolean; data: object}> {
