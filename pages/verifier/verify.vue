@@ -14,21 +14,30 @@
       </ol>
     </nav>
   </div>
-  <br><br>
-  <div v-if="step===Step.CONNECTION_SETUP" class="flex items-center justify-center gap-x-6">
-    <button type="button" @click="generateQRCodeForConnection" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Generate Verification QR Code!</button>
-    <div v-if="invitationLink" class="flex-auto text-center">
-      Please scan this QR code to initiate your diploma verification!
-      <br><br>
-      <qrcode-vue class="mx-auto" :value="invitationLink" level="H" size=300 render-as="svg"/>
+  <div class="flex mt-14">
+    <div class="flex-1">
+      <div v-if="step===Step.CONNECTION_SETUP" class="flex items-center justify-center gap-x-6">
+        <button type="button" @click="generateQRCodeForConnection" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Generate Verification QR Code!</button>
+        <div v-if="invitationLink" class="flex-auto text-center">
+          Please scan this QR code to initiate your diploma verification!
+          <br><br>
+          <qrcode-vue class="mx-auto" :value="invitationLink" level="H" size=300 render-as="svg"/>
+        </div>
+      </div>
+      <div v-if="step===Step.REQUESTING_CREDENTIALS">Requesting Credentials...</div>
+      <VerifierIndyWalletCredentialRequest v-if="step===Step.REQUESTING_CREDENTIALS" :connectionID="WalletConnectionID" @verifiable-credential-proof="displayProof"/>
+      <div v-if="step===Step.DONE" class="flex center justify-center gap-x-6">
+          <p>Subject: {{ proofRequestSubject }}</p>
+          <p>Degree: {{ proofRequestDegree }}</p>
+          <p>Document Number: {{ proofRequestDocumentNumber }}</p>
+      </div>
     </div>
-  </div>
-  <div v-if="step===Step.REQUESTING_CREDENTIALS">Requesting Credentials...</div>
-  <VerifierIndyWalletCredentialRequest v-if="step===Step.REQUESTING_CREDENTIALS" :connectionID="WalletConnectionID" @verifiable-credential-proof="displayProof"/>
-  <div v-if="step===Step.DONE" class="flex center justify-center gap-x-6">
-      <p>Subject: {{ proofRequestSubject }}</p>
-      <p>Degree: {{ proofRequestDegree }}</p>
-      <p>Document Number: {{ proofRequestDocumentNumber }}</p>
+    <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-8">
+      <h2 class="text-xl font-semibold">Updates</h2>
+      <ol class="list-decimal">
+        <li v-for="message in logMessages">{{ message }}</li>
+      </ol>
+    </div>
   </div>
 </template>
 
@@ -46,12 +55,16 @@
   const proofRequestSubject = ref("");
   const proofRequestDegree = ref("");
   const proofRequestDocumentNumber = ref("");
+  const logMessages = ref([] as string[]);
+  let createdInterval: number = null
 
   const generateQRCodeForConnection = () => {
     createConnection(false).then(({invitationURL, connectionID}) => {
       console.log(`invitation.....${invitationURL}`)
       invitationLink.value = invitationURL
       WalletConnectionID.value = connectionID
+      addToLog('[Verifier] Creating connection QRCode')
+      createdInterval = setInterval(manageIntervalForAcceptedInvitation, 3000);
     })
   }
 
@@ -68,6 +81,7 @@
       if (isAccepted) {
         console.log("Invitation accepted!")
         step.value = Step.REQUESTING_CREDENTIALS
+        addToLog("[Wallet] accepted verifier connection!")
         return true
       }
     })
@@ -81,13 +95,17 @@
       }
     })
   }
-  const createdInterval = setInterval(manageIntervalForAcceptedInvitation, 3000);
 
   async function displayProof(data) {
+    addToLog("[Verifier] Received proof from wallet!")
+    addToLog("[Verifier] Proof is validated against the ledger!")
     step.value = Step.DONE
     proofRequestSubject.value = data.subject
     proofRequestDegree.value = data.degree
     proofRequestDocumentNumber.value = data.documentNumber
   }
 
+  function addToLog(logMessage: string) {
+    logMessages.value.push(logMessage)
+  }
 </script>

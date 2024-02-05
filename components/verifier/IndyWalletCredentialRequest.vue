@@ -3,13 +3,14 @@ import { ref } from 'vue'
 import {checkProofRequestIsAccepted, sendProofRequest} from "~/composables/IndyAPI";
 
 const props = defineProps(['connectionID'])
-const emit = defineEmits(['verifiableCredentialProof'])
+const emit = defineEmits(['verifiableCredentialProof', 'addToLog'])
 const connectionID = props.connectionID
 const proofRequestID = ref('')
 
 const sendVCProofRequest = () => {
-  sendProofRequest(connectionID).then(({presentation_exchange_id}) => {
+  sendProofRequest(connectionID).then((presentation_exchange_id) => {
     proofRequestID.value = presentation_exchange_id
+    emit('addToLog', '[Verifier] sent request for proof to wallet')
   })
 }
 
@@ -26,6 +27,7 @@ async function checkForAcceptedProofRequest(): Promise<boolean|undefined> {
     }
   })
 }
+
 async function checkForAcceptedProofRequestInterval() {
   await checkForAcceptedProofRequest().then((isAccepted) => {
     if (isAccepted) {
@@ -35,7 +37,6 @@ async function checkForAcceptedProofRequestInterval() {
   })
 }
 const createdInterval = setInterval(checkForAcceptedProofRequestInterval, 3000);
-
 </script>
 
 <template>
