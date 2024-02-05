@@ -13,7 +13,7 @@
               <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
                 <component :is="feature.icon" class="h-6 w-6 text-white" aria-hidden="true" />
               </div>
-              {{ feature.name }}
+              <a :href="feature.url">{{ feature.name }}</a>
             </dt>
             <dd class="mt-2 text-base leading-7 text-gray-600">{{ feature.description }}</dd>
           </div>
@@ -33,6 +33,7 @@ const features = [
         "Entity that issues the credentials. In our example, the issuer will be the ACME school." +
         "The issuer will make sure as well to sync all public keys and schemas with the ledger.",
     icon: CloudArrowUpIcon,
+    url: "/issuer"
   },
   {
     name: 'Ledger',
@@ -41,6 +42,7 @@ const features = [
         "verify the authenticity of the credentials. That is done by storing all public keys of all" +
         "Issuers on the ledger in addition to the schemas and revocation registries",
     icon: LockClosedIcon,
+    url: "https://explorer.sandbox.ssi.ch/home/SANDBOX"
   },
   {
     name: 'Wallet',
@@ -49,12 +51,14 @@ const features = [
         "The wallet is also be the only place that can present the credentials to a verifier." +
         "In our example, the wallet will be owned by the student.",
     icon: ArrowPathIcon,
+    url: "https://github.com/e-id-admin/public-sandbox-trustinfrastructure/discussions/17"
   },
   {
     name: 'Verifier',
     description:
         "Entity that needs to verify the credentials. In our example, the verifier will be the Leo Inc.",
     icon: FingerPrintIcon,
+    url: "/issuer"
   },
 ]
 </script>
