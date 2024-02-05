@@ -30,25 +30,30 @@ const features = [
   {
     name: 'Issuer',
     description:
-        'Write a description here...',
+        "Entity that issues the credentials. In our example, the issuer will be the ACME school." +
+        "The issuer will make sure as well to sync all public keys and schemas with the ledger.",
     icon: CloudArrowUpIcon,
   },
   {
     name: 'Ledger',
     description:
-        'Write a description here...',
+        "Ledgers are also called 'trust anchor'. It is the reference used by verifiers to " +
+        "verify the authenticity of the credentials. That is done by storing all public keys of all" +
+        "Issuers on the ledger in addition to the schemas and revocation registries",
     icon: LockClosedIcon,
   },
   {
     name: 'Wallet',
     description:
-        'Write a description here...',
+        "Storage application that is the only place that will store the actual credentials." +
+        "The wallet is also be the only place that can present the credentials to a verifier." +
+        "In our example, the wallet will be owned by the student.",
     icon: ArrowPathIcon,
   },
   {
     name: 'Verifier',
     description:
-        'Write a description here...',
+        "Entity that needs to verify the credentials. In our example, the verifier will be the Leo Inc.",
     icon: FingerPrintIcon,
   },
 ]
