@@ -30,33 +30,33 @@ const features = [
   {
     name: 'Issuer',
     description:
-        "Entity that issues the credentials. In our example, the issuer will be the ACME school." +
-        "The issuer will make sure as well to sync all public keys and schemas with the ledger.",
+        "Entity that issues the credentials by signing them. In our example, the issuer is the ACME school." +
+        "The public key and the schemas used by the issuer are stored on the ledger.",
     icon: CloudArrowUpIcon,
     url: "/issuer"
   },
   {
     name: 'Ledger',
     description:
-        "Ledgers are also called 'trust anchor'. It is the reference used by verifiers to " +
-        "verify the authenticity of the credentials. That is done by storing all public keys of all" +
-        "Issuers on the ledger in addition to the schemas and revocation registries",
+        "The ledger is the 'trust anchor' of the system. It stores the public keys of the " +
+        "issuers, as well as the schemas and revocation registries." +
+        " It is the reference used by verifiers to verify the signatures of the credentials.",
     icon: LockClosedIcon,
     url: "https://explorer.sandbox.ssi.ch/home/SANDBOX"
   },
   {
     name: 'Wallet',
     description:
-        "Storage application that is the only place that will store the actual credentials." +
-        "The wallet is also be the only place that can present the credentials to a verifier." +
-        "In our example, the wallet will be owned by the student.",
+        "The wallet is an application installed by the user which stores their credentials." +
+        "It also prepares the credentials and presents them to the verifier." +
+        "In our example, the wallet holds the diplomas of the student.",
     icon: ArrowPathIcon,
     url: "https://github.com/e-id-admin/public-sandbox-trustinfrastructure/discussions/17"
   },
   {
     name: 'Verifier',
     description:
-        "Entity that needs to verify the credentials. In our example, the verifier will be the Leo Inc.",
+        "Entity that verifies credentials. In our example, the verifier is Leo Inc.",
     icon: FingerPrintIcon,
     url: "/issuer"
   },
