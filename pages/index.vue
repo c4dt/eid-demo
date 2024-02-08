@@ -13,7 +13,7 @@
               <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
                 <component :is="feature.icon" class="h-6 w-6 text-white" aria-hidden="true" />
               </div>
-              {{ feature.name }}
+              <a :href="feature.url">{{ feature.name }}</a>
             </dt>
             <dd class="mt-2 text-base leading-7 text-gray-600">{{ feature.description }}</dd>
           </div>
@@ -30,26 +30,35 @@ const features = [
   {
     name: 'Issuer',
     description:
-        'Write a description here...',
+        "Entity that issues the credentials by signing them. In our example, the issuer is the ACME school." +
+        "The public key and the schemas used by the issuer are stored on the ledger.",
     icon: CloudArrowUpIcon,
+    url: "/issuer"
   },
   {
     name: 'Ledger',
     description:
-        'Write a description here...',
+        "The ledger is the 'trust anchor' of the system. It stores the public keys of the " +
+        "issuers, as well as the schemas and revocation registries." +
+        " It is the reference used by verifiers to verify the signatures of the credentials.",
     icon: LockClosedIcon,
+    url: "https://explorer.sandbox.ssi.ch/home/SANDBOX"
   },
   {
     name: 'Wallet',
     description:
-        'Write a description here...',
+        "The wallet is an application installed by the user which stores their credentials." +
+        "It also prepares the credentials and presents them to the verifier." +
+        "In our example, the wallet holds the diplomas of the student.",
     icon: ArrowPathIcon,
+    url: "https://github.com/e-id-admin/public-sandbox-trustinfrastructure/discussions/17"
   },
   {
     name: 'Verifier',
     description:
-        'Write a description here...',
+        "Entity that verifies credentials. In our example, the verifier is Leo Inc.",
     icon: FingerPrintIcon,
+    url: "/issuer"
   },
 ]
 </script>

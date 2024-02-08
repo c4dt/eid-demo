@@ -6,8 +6,13 @@ and uses Aries Cloud Agent (ACA-Py) as a backend for the issuer and verifier.
 ![platform screenshot](./docs/platform-screenshot-01.png)
 
 ## Technical Details and system requirements
-### Flow Diagram
+### Flow Diagrams
 ![flow diagram](./docs/eid-flow-diagram.jpg)
+
+**E-ID issuance flow**
+![flow diagram](./docs/issuance-diagram.png)
+(Anon creds Specification - [reference](https://hyperledger.github.io/anoncreds-spec/#anoncreds-issuance-data-flow)
+)
 ### External dependencies
 **Ledger**  
 This project uses the [Swiss E-ID sandbox ledger](https://explorer.sandbox.ssi.ch/home/SANDBOX)
