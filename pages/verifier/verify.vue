@@ -14,8 +14,8 @@
       </ol>
     </nav>
   </div>
-  <div class="flex mt-14">
-    <div class="flex-1">
+  <div class="flex mt-14 shadow-md min-h-[500px] shadow-md rounded-xl bg-gray-50">
+    <div class="flex-1 mt-10 ml-10">
       <div v-if="step===Step.CONNECTION_SETUP" class="flex items-center justify-center gap-x-6">
         <button type="button" @click="generateQRCodeForConnection" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Generate Verification QR Code!</button>
         <div v-if="invitationLink" class="flex-auto text-center">
@@ -26,13 +26,16 @@
       </div>
       <div v-if="step===Step.REQUESTING_CREDENTIALS">Requesting Credentials...</div>
       <VerifierIndyWalletCredentialRequest v-if="step===Step.REQUESTING_CREDENTIALS" :connectionID="WalletConnectionID" @verifiable-credential-proof="displayProof"/>
-      <div v-if="step===Step.DONE" class="flex center justify-center gap-x-6">
+      <div v-if="step===Step.DONE" class="container mx-auto max-w-4xl bg-white rounded-lg shadow-lg p-6 my-8">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">Credential Information</h2>
+        <div class="space-y-2 font-medium text-gray-700">
           <p>Subject: {{ proofRequestSubject }}</p>
           <p>Degree: {{ proofRequestDegree }}</p>
           <p>Document Number: {{ proofRequestDocumentNumber }}</p>
+        </div>
       </div>
     </div>
-    <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-8">
+    <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-10 rounded-md shadow-lg">
       <h2 class="text-xl font-semibold">Updates</h2>
       <ol class="list-decimal">
         <li v-for="message in logMessages">
