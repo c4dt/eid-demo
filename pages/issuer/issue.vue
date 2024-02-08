@@ -14,17 +14,18 @@
       </ol>
     </nav>
   </div>
-  <div class="flex mt-14">
-    <div class="flex-1 p-4">
+  <div class="flex mt-14 shadow-md min-h-[500px] shadow-md rounded-xl bg-gray-50">
+    <div class="flex-1 p-4 mt-10 ml-10">
       <IssuerDiplomaCredentialForm v-if="step===Step.VC_FORM" @diploma-object-created="createCredentialData" @add-to-log="addToLog" />
-      <div v-if="step!==Step.VC_FORM" class="container mx-auto">
-        <p>Name: {{ CredentialData.signee }}</p>
-        <p>Document Number: {{ CredentialData.documentNumber }}</p>
-        <p>Subject: {{ CredentialData.subject }}</p>
-        <p>Degree: {{ CredentialData.degree }}</p>
-        <p>Date of issue: {{ CredentialData.dateOfIssue }}</p>
-        <p>Message: {{ CredentialData.body }}</p>
-        <br>
+      <div v-if="step!==Step.VC_FORM" class="container mx-auto max-w-4xl bg-white rounded-lg shadow-lg p-6 my-8">
+        <div class="space-y-2 font-medium text-gray-700">
+          <p>Name: <span class="font-normal">{{ CredentialData.signee }}</span></p>
+          <p>Document Number: <span class="font-normal">{{ CredentialData.documentNumber }}</span></p>
+          <p>Subject: <span class="font-normal">{{ CredentialData.subject }}</span></p>
+          <p>Degree: <span class="font-normal">{{ CredentialData.degree }}</span></p>
+          <p>Date of Issue: <span class="font-normal">{{ CredentialData.dateOfIssue }}</span></p>
+          <p>Message: <span class="font-normal">{{ CredentialData.body }}</span></p>
+        </div>
       </div>
       <IssuerIndyWalletConnectionSetUp v-if="step===Step.CONNECTION_SETUP" :connectionUserName="CredentialData.signee" @wallet-connection-established="SendCredentialToWallet"/>
       <div v-if="step===Step.SENDING_VC_TO_WALLET" class="container mx-auto text-center">
@@ -36,10 +37,12 @@
         <p v-if="step===Step.DONE" class="text-center"> Credential Successfully Sent to wallet</p>
       </div>
     </div>
-    <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-8">
+    <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-10 rounded-md shadow-lg">
       <h2 class="text-xl font-semibold">Updates</h2>
       <ol class="list-decimal">
-        <li v-for="message in logMessages">{{ message }}</li>
+        <li v-for="message in logMessages">
+          [{{ message.source }}<p v-if="message.target !== undefined"> -> {{ message.target }}</p>] {{ message.message }}
+        </li>
       </ol>
     </div>
   </div>
@@ -49,25 +52,25 @@
   definePageMeta({layout: 'acme'})
 
   import {ref} from "vue";
-  import type {DiplomaSchema} from "~/composables/VerifiableCredential";
+  import type {ActionLog, DiplomaSchema} from "~/composables/VerifiableCredential";
   import {GenerateVC} from "~/composables/IndyAPI";
 
   enum Step {VC_FORM, CONNECTION_SETUP, SENDING_VC_TO_WALLET, DONE}
   const step = ref(Step.VC_FORM);
   const CredentialData = ref({} as DiplomaSchema);
   const connectionID = ref("");
-  const logMessages = ref([] as string[]);
+  const logMessages = ref([] as ActionLog[]);
 
   function createCredentialData(createdCredential: DiplomaSchema)   {
     console.log(`createCredentialData..... ${createdCredential}`)
     CredentialData.value = createdCredential;
     step.value = Step.CONNECTION_SETUP;
-    addToLog("[Issuer] Credential Data saved")
+    addToLog("Credential Data saved", 'Issuer', null)
   }
 
   function SendCredentialToWallet(walletConnectionID: string) {
-    addToLog("[Wallet] Accepted issuer connection")
-    addToLog("[Issuer] Sending Credential to wallet..")
+    addToLog("Accepted connection", "Wallet", "Issuer")
+    addToLog("Sending Credential", "Issuer", "Wallet")
     connectionID.value = walletConnectionID
     step.value = Step.SENDING_VC_TO_WALLET;
     GenerateVC(walletConnectionID, CredentialData.value).then((res) => {
@@ -76,10 +79,14 @@
         step.value = Step.DONE;
       }, 2000)
     })
-    addToLog("[Issuer] Credential sent successfully!")
+    addToLog("Credential received successfully!", "Wallet", "Issuer")
   }
 
-  function addToLog(logMessage: string) {
-    logMessages.value.push(logMessage)
+  function addToLog(message: string, source: string = "Issuer", target: string | null = "Wallet") {
+    logMessages.value.push({
+      source: source,
+      target: target,
+      message: message
+    })
   }
 </script>

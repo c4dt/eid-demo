@@ -10,7 +10,7 @@ const proofRequestID = ref('')
 const sendVCProofRequest = () => {
   sendProofRequest(connectionID).then((presentation_exchange_id) => {
     proofRequestID.value = presentation_exchange_id
-    emit('addToLog', '[Verifier] sent request for proof to wallet')
+    emit('addToLog', 'Sent request for proof', 'Verifier', 'Wallet')
   })
 }
 
