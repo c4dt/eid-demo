@@ -41,7 +41,7 @@
       <h2 class="text-xl font-semibold">Updates</h2>
       <ol class="list-decimal">
         <li v-for="message in logMessages">
-          [{{ message.source }}<p v-if="message.target !== undefined"> -> {{ message.target }}</p>] {{ message.message }}
+          [{{ message.source }}<span v-if="message.target !== undefined"> -> {{ message.target }}</span>] {{ message.message }}
         </li>
       </ol>
     </div>
@@ -65,7 +65,7 @@
     console.log(`createCredentialData..... ${createdCredential}`)
     CredentialData.value = createdCredential;
     step.value = Step.CONNECTION_SETUP;
-    addToLog("Credential Data saved", 'Issuer', null)
+    addToLog("Credential Data saved", 'Issuer', undefined)
   }
 
   function SendCredentialToWallet(walletConnectionID: string) {
@@ -82,7 +82,7 @@
     addToLog("Credential received successfully!", "Wallet", "Issuer")
   }
 
-  function addToLog(message: string, source: string = "Issuer", target: string | null = "Wallet") {
+  function addToLog(message: string, source: string = "Issuer", target: string | undefined = "Wallet") {
     logMessages.value.push({
       source: source,
       target: target,
