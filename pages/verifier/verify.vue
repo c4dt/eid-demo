@@ -25,7 +25,7 @@
         </div>
       </div>
       <div v-if="step===Step.REQUESTING_CREDENTIALS">Requesting Credentials...</div>
-      <VerifierIndyWalletCredentialRequest v-if="step===Step.REQUESTING_CREDENTIALS" :connectionID="WalletConnectionID" @verifiable-credential-proof="displayProof"/>
+      <VerifierIndyWalletCredentialRequest v-if="step===Step.REQUESTING_CREDENTIALS" :connectionID="WalletConnectionID" @add-to-log="addToLog" @verifiable-credential-proof="displayProof"/>
       <div v-if="step===Step.DONE" class="container mx-auto max-w-4xl bg-white rounded-lg shadow-lg p-6 my-8">
         <h2 class="text-2xl font-semibold mb-4 text-gray-800">Credential Information</h2>
         <div class="space-y-2 font-medium text-gray-700">
@@ -39,7 +39,7 @@
       <h2 class="text-xl font-semibold">Updates</h2>
       <ol class="list-decimal">
         <li v-for="message in logMessages">
-          [{{ message.source }}<p v-if="message.target !== undefined"> -> {{ message.target }}</p>] {{ message.message }}
+          [{{ message.source }}<span v-if="message.target !== undefined"> -> {{ message.target }}</span>] {{ message.message }}
         </li>
       </ol>
     </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-  import {ActionLog} from "~/composables/VerifiableCredential";
+  import type {ActionLog} from "~/composables/VerifiableCredential";
 
   definePageMeta({layout: 'leo-inc'})
 
@@ -63,14 +63,14 @@
   const proofRequestDegree = ref("");
   const proofRequestDocumentNumber = ref("");
   const logMessages = ref([] as ActionLog[]);
-  let createdInterval: number = null
+  let createdInterval: number
 
   const generateQRCodeForConnection = () => {
     createConnection(false).then(({invitationURL, connectionID}) => {
       console.log(`invitation.....${invitationURL}`)
       invitationLink.value = invitationURL
       WalletConnectionID.value = connectionID
-      addToLog('Creating connection QRCode', 'Verifier', null)
+      addToLog('Creating connection QRCode', 'Verifier', undefined)
       createdInterval = setInterval(manageIntervalForAcceptedInvitation, 3000);
     })
   }
@@ -112,7 +112,7 @@
     proofRequestDocumentNumber.value = data.documentNumber
   }
 
-  function addToLog(message: string, source: string = "Issuer", target?: string = "Wallet") {
+  function addToLog(message: string, source: string = "Issuer", target: string | undefined = "Wallet") {
     logMessages.value.push({
       source: source,
       target: target,
