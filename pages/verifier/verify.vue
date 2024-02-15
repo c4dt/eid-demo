@@ -25,7 +25,7 @@
         </div>
       </div>
       <div v-if="step===Step.REQUESTING_CREDENTIALS">Requesting Credentials...</div>
-      <VerifierIndyWalletCredentialRequest v-if="step===Step.REQUESTING_CREDENTIALS" :connectionID="WalletConnectionID" @verifiable-credential-proof="displayProof"/>
+      <VerifierIndyWalletCredentialRequest v-if="step===Step.REQUESTING_CREDENTIALS" :connectionID="WalletConnectionID" @add-to-log="addToLog" @verifiable-credential-proof="displayProof"/>
       <div v-if="step===Step.DONE" class="container mx-auto max-w-4xl bg-white rounded-lg shadow-lg p-6 my-8">
         <h2 class="text-2xl font-semibold mb-4 text-gray-800">Credential Information</h2>
         <div class="space-y-2 font-medium text-gray-700">
