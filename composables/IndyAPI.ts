@@ -1,8 +1,8 @@
 import axios from "axios";
-import {type DiplomaSchema } from "~/composables/VerifiableCredential";
+import { type DiplomaSchema } from "~/composables/VerifiableCredential";
 
 
-export async function createConnection (isIssuer: boolean): Promise<{ invitationURL: string; connectionID: string}> {
+export async function createConnection(isIssuer: boolean): Promise<{ invitationURL: string; connectionID: string }> {
   const config = useRuntimeConfig()
   let connectorName, connectionDomain, connectionAPIKey: string
   if (isIssuer) {
@@ -14,7 +14,7 @@ export async function createConnection (isIssuer: boolean): Promise<{ invitation
     connectionDomain = config.public.verifierURL;
     connectionAPIKey = config.public.verifierAPIKey;
   }
-  const {data} = await axios.post(
+  const { data } = await axios.post(
     `${connectionDomain}/connections/create-invitation?auto_accept=true`,
     {
       "my_label": connectorName
@@ -25,10 +25,10 @@ export async function createConnection (isIssuer: boolean): Promise<{ invitation
         'X-API-KEY': connectionAPIKey
       }
     })
-  return {invitationURL: data.invitation_url, connectionID: data.connection_id};
+  return { invitationURL: data.invitation_url, connectionID: data.connection_id };
 }
 
-export async function checkInvitationIsAccepted (connectionID: string, isIssuer: boolean): Promise<boolean> {
+export async function checkInvitationIsAccepted(connectionID: string, isIssuer: boolean): Promise<boolean> {
   const config = useRuntimeConfig()
   let connectionDomain, connectionAPIKey: string
   if (isIssuer) {
@@ -39,7 +39,7 @@ export async function checkInvitationIsAccepted (connectionID: string, isIssuer:
     connectionAPIKey = config.public.verifierAPIKey;
   }
   console.log('Checking invitation is accepted...');
-  const {data} = await axios.get(
+  const { data } = await axios.get(
     `${connectionDomain}/connections/${connectionID}`,
     {
       headers: {
@@ -53,46 +53,46 @@ export async function checkInvitationIsAccepted (connectionID: string, isIssuer:
 export const GenerateVC = async (connectionID: string, credentialData: DiplomaSchema) => {
   const config = useRuntimeConfig()
   console.log('Generating Verifiable Credential');
-  const {data} = await axios.post(`${config.public.issuerURL}/issue-credential/send`, {
-      "connection_id": connectionID,
-      "credential_proposal": {
-        "attributes": [
-          {
-            "name": "subject",
-            "value": credentialData.subject,
-            "mime-type": "text/plain"
-          },
-          {
-            "name": "degree",
-            "value": credentialData.degree,
-            "mime-type": "text/plain"
-          },
-          {
-            "name": "document_number",
-            "value": credentialData.documentNumber,
-            "mime-type": "text/plain"
-          },
-          {
-            "name": "body",
-            "value": credentialData.body,
-            "mime-type": "text/plain"
-          },
-          {
-            "name": "signee",
-            "value": credentialData.signee,
-            "mime-type": "text/plain"
-          },
-          {
-            "name": "date_of_issue",
-            "value": credentialData.dateOfIssue,
-            "mime-type": "text/plain"
-          }
-        ],
-        "@type": "issue-credential/1.0/credential-preview"
-      },
-      "auto_remove": "true",
-      "schema_id": "JEfsRZ6qBhToWbGcJDfe2N:2:EPFL_diploma_supplement:1.0.7"
+  const { data } = await axios.post(`${config.public.issuerURL}/issue-credential/send`, {
+    "connection_id": connectionID,
+    "credential_proposal": {
+      "attributes": [
+        {
+          "name": "subject",
+          "value": credentialData.subject,
+          "mime-type": "text/plain"
+        },
+        {
+          "name": "degree",
+          "value": credentialData.degree,
+          "mime-type": "text/plain"
+        },
+        {
+          "name": "document_number",
+          "value": credentialData.documentNumber,
+          "mime-type": "text/plain"
+        },
+        {
+          "name": "body",
+          "value": credentialData.body,
+          "mime-type": "text/plain"
+        },
+        {
+          "name": "signee",
+          "value": credentialData.signee,
+          "mime-type": "text/plain"
+        },
+        {
+          "name": "date_of_issue",
+          "value": credentialData.dateOfIssue,
+          "mime-type": "text/plain"
+        }
+      ],
+      "@type": "issue-credential/1.0/credential-preview"
     },
+    "auto_remove": "true",
+    "schema_id": "JEfsRZ6qBhToWbGcJDfe2N:2:EPFL_diploma_supplement:1.0.7"
+  },
     {
       headers: {
         'Content-Type': 'application/json',
@@ -102,10 +102,10 @@ export const GenerateVC = async (connectionID: string, credentialData: DiplomaSc
   return
 }
 
-export async function sendProofRequest (connectionID: string): Promise<string> {
+export async function sendProofRequest(connectionID: string): Promise<string> {
   const config = useRuntimeConfig()
   console.log('Sending proof request');
-  const {data} = await axios.post(
+  const { data } = await axios.post(
     `${config.public.verifierURL}/present-proof/send-request`,
     {
       "connection_id": connectionID,
@@ -144,10 +144,10 @@ export async function sendProofRequest (connectionID: string): Promise<string> {
   return data.presentation_exchange_id;
 }
 
-export async function checkProofRequestIsAccepted (proofRequestID: string): Promise<{ isAccepted: boolean; data: object}> {
+export async function checkProofRequestIsAccepted(proofRequestID: string): Promise<{ isAccepted: boolean; data: object }> {
   const config = useRuntimeConfig()
   console.log('Checking proof request is accepted...');
-  let {data} = await axios.get(
+  let { data } = await axios.get(
     `${config.public.verifierURL}/present-proof/records/${proofRequestID}`,
     {
       headers: {
@@ -160,7 +160,8 @@ export async function checkProofRequestIsAccepted (proofRequestID: string): Prom
     data = {
       subject: data.presentation.requested_proof.revealed_attr_groups.info.values.subject.raw,
       degree: data.presentation.requested_proof.revealed_attr_groups.info.values.degree.raw,
-      documentNumber: data.presentation.requested_proof.revealed_attr_groups.info.values.document_number.raw,}
+      documentNumber: data.presentation.requested_proof.revealed_attr_groups.info.values.document_number.raw,
+    }
   }
-  return {isAccepted: accepted, data: data};
+  return { isAccepted: accepted, data: data };
 }

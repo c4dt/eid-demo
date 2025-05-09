@@ -14,7 +14,7 @@
       </ol>
     </nav>
   </div>
-  <div class="flex mt-14 shadow-md min-h-[500px] shadow-md rounded-xl bg-gray-50">
+  <div class="flex mt-14 shadow-md min-h-[500px] rounded-xl bg-gray-50">
     <div class="flex-1 p-4 mt-10 ml-10">
       <IssuerDiplomaCredentialForm v-if="step===Step.VC_FORM" @diploma-object-created="createCredentialData" @add-to-log="addToLog" />
       <div v-if="step!==Step.VC_FORM" class="container mx-auto max-w-4xl bg-white rounded-lg shadow-lg p-6 my-8">
@@ -37,7 +37,7 @@
         <p v-if="step===Step.DONE" class="text-center"> Credential Successfully Sent to wallet</p>
       </div>
     </div>
-    <div class="w-72 bg-gray-100 p-6 bg-gray-300 -mt-10 rounded-md shadow-lg">
+    <div class="w-72 bg-gray-100 p-6 -mt-10 rounded-md shadow-lg">
       <h2 class="text-xl font-semibold">Updates</h2>
       <ol class="list-decimal">
         <li v-for="message in logMessages">

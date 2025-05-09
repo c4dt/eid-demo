@@ -1,7 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import {resolve} from "path";
+import tailwindcss from "@tailwindcss/vite";
+
 
 export default defineNuxtConfig({
+  app: {
+    head: {
+      title: "Swiyu",
+      meta: [
+        { name: "description", content: "Swiyu" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+      ],
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    },
+  },
+  compatibilityDate: '2025-05-09',
   runtimeConfig: {
     public: {
       issuerURL: process.env.ISSUER_URL,
@@ -11,17 +23,11 @@ export default defineNuxtConfig({
     }
   },
   devtools: { enabled: true },
-  modules: [
-      '@nuxtjs/tailwindcss'
-  ],
-  alias: {
-    "@": resolve(__dirname, "/")
-  },
-  css: ["~/assets/main.scss"],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
+  modules: ['@nuxt/image'],
+  css: ['~/assets/css/main.css'],
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ]
   },
 })

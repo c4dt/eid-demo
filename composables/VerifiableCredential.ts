@@ -5,7 +5,6 @@ export interface DiplomaSchema {
   documentNumber: string;
   body: string;
   dateOfIssue: string;
-
 }
 
 export interface ActionLog {
